@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Users from '@/models/users';
 
 const connectMongoDB = async () => {
   try {
@@ -15,32 +16,6 @@ const connectMongoDB = async () => {
 };
 
 connectMongoDB();
-
-const Users = mongoose.model(
-  'user', // akan jadi collection dengan nama users ketika disubmit di db
-  new mongoose.Schema({
-    id: {
-      type: String,
-      require: true,
-    },
-    name: {
-      type: String,
-      require: true,
-    },
-    password: {
-      type: String,
-      require: true,
-    },
-    nis: {
-      type: String,
-      require: true,
-    },
-    token: {
-      type: String,
-      default: '',
-    },
-  })
-);
 
 export default async function handler(req, res) {
   try {

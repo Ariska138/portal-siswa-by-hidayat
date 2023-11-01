@@ -3,7 +3,7 @@ import { dmSans } from '@/styles/fonts';
 
 export default function Login() {
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${dmSans.className}`}>
       <div className={styles.card}>
         <h1>Sign</h1>
         <div className={styles.summary}>
