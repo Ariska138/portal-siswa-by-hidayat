@@ -1,19 +1,6 @@
-import mongoose from 'mongoose';
 import Users from '@/models/users';
-
-const connectMongoDB = async () => {
-  try {
-    await mongoose.connect(
-      'mongodb+srv://ppqita:santri@ppqitadb.76fharf.mongodb.net/portal-siswa',
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    );
-  } catch (error) {
-    console.log(error);
-  }
-};
+import { parse, serialize } from 'cookie';
+import { connectMongoDB } from '@/db/mongoDB';
 
 connectMongoDB();
 
@@ -50,6 +37,8 @@ export default async function handler(req, res) {
       { new: true }
     );
     console.log('users after update: ', users);
+
+    res.setHeader('Set-Cookie', serialize('token', '', { maxAge: 0 }));
 
     // kasih tahu client (hanya data yg diperbolehkan)
     return res.status(200).json({ error: false, message: 'berhasil logout' });

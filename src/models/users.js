@@ -23,6 +23,12 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const UserModel = mongoose.model('user', userSchema);
+let UserModel;
+// fix overwrite user
+if (mongoose.models.User) {
+  UserModel = mongoose.model('User');
+} else {
+  UserModel = mongoose.model('User', userSchema);
+}
 
 export default UserModel;

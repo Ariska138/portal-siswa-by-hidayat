@@ -1,19 +1,6 @@
-import mongoose from 'mongoose';
 import Users from '@/models/users';
-
-const connectMongoDB = async () => {
-  try {
-    await mongoose.connect(
-      'mongodb+srv://ppqita:santri@ppqitadb.76fharf.mongodb.net/portal-siswa',
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    );
-  } catch (error) {
-    console.log(error);
-  }
-};
+import { connectMongoDB } from '@/db/mongoDB';
+import { parse, serialize } from 'cookie';
 
 connectMongoDB();
 
@@ -37,6 +24,8 @@ export default async function handler(req, res) {
     console.log('user: ', user);
 
     if (!user || !user.nis) {
+      res.setHeader('Set-Cookie', serialize('token', '', { maxAge: 0 }));
+
       return res.status(400).json({
         error: true,
         message: 'token tidak valid',

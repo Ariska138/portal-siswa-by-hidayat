@@ -1,20 +1,7 @@
 import { generateRandomToken } from '@/utils/RandomToken';
-import mongoose from 'mongoose';
 import Users from '@/models/users';
-
-const connectMongoDB = async () => {
-  try {
-    await mongoose.connect(
-      'mongodb+srv://ppqita:santri@ppqitadb.76fharf.mongodb.net/portal-siswa',
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    );
-  } catch (error) {
-    console.log(error);
-  }
-};
+import { parse, serialize } from 'cookie';
+import { connectMongoDB } from '@/db/mongoDB';
 
 connectMongoDB();
 
@@ -68,6 +55,17 @@ export default async function handler(req, res) {
 
     // lengkapi data yg kurang
     const token = generateRandomToken(10);
+
+    res.setHeader(
+      'Set-Cookie',
+      serialize('token', token, {
+        path: '/*',
+        maxAge: 60 * 60 * 24 * 7, // Contoh: Cookie berlaku selama 1 minggu
+        sameSite: 'strict',
+        httpOnly: true,
+        // secure: process.env.NODE_ENV === 'production',
+      })
+    );
 
     // jika sudah sesuai simpan
     const users = await Users.findOneAndUpdate(
