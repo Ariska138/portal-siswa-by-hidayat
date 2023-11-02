@@ -54,19 +54,18 @@ export default function Login() {
                   'Content-Type': 'application/json', // Specifying the content type as JSON
                 },
               });
-
+              const responseData = await res.json();
               if (res.ok) {
                 // Periksa apakah respons memiliki status code 200 (OK)
-                const responseData = await res.json(); // Mendapatkan data JSON dari respons
-                console.log(responseData);
+                // Mendapatkan data JSON dari respons
+                console.log('responseData: ', responseData);
                 alert('sukses login');
                 router.push('/dashboard');
               } else {
                 console.error('Gagal melakukan permintaan:', res.status);
-                alert('Terjadi kesalahan pada koneksi Anda');
+                console.log(responseData);
+                alert(responseData.message);
               }
-
-              console.log('Res: ', res);
             } catch (error) {
               console.log('error: ', error);
               alert('Terjadi Kesalahan, harap hubungi team support');

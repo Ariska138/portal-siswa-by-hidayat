@@ -1,5 +1,5 @@
 import Users from '@/models/users';
-import { parse, serialize } from 'cookie';
+import { getCookies, getCookie, setCookie, deleteCookie } from 'cookies-next';
 import { connectMongoDB } from '@/db/mongoDB';
 
 connectMongoDB();
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     );
     console.log('users after update: ', users);
 
-    res.setHeader('Set-Cookie', serialize('token', '', { maxAge: 0 }));
+    deleteCookie('token', { req, res });
 
     // kasih tahu client (hanya data yg diperbolehkan)
     return res.status(200).json({ error: false, message: 'berhasil logout' });

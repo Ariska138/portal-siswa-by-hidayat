@@ -77,8 +77,6 @@ export default function Daftar() {
                 console.error('Gagal melakukan permintaan:', res.status);
                 alert('Data gagal didaftarkan');
               }
-
-              console.log('Res: ', res);
             } catch (error) {
               console.log('error: ', error);
               alert('Terjadi Kesalahan, harap hubungi team support');

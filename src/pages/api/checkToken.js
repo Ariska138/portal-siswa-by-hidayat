@@ -1,6 +1,6 @@
 import Users from '@/models/users';
 import { connectMongoDB } from '@/db/mongoDB';
-import { parse, serialize } from 'cookie';
+import { getCookies, getCookie, setCookie, deleteCookie } from 'cookies-next';
 
 connectMongoDB();
 
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     console.log('user: ', user);
 
     if (!user || !user.nis) {
-      res.setHeader('Set-Cookie', serialize('token', '', { maxAge: 0 }));
+      deleteCookie('token', { req, res });
 
       return res.status(400).json({
         error: true,
@@ -33,7 +33,9 @@ export default async function handler(req, res) {
     }
 
     // kasih tahu client (hanya data yg diperbolehkan)
-    return res.status(200).json({ id: user.id, nis: user.nis });
+    return res
+      .status(200)
+      .json({ id: user.id, nis: user.nis, name: user.name });
   } catch (error) {
     console.log('error:', error);
     res
