@@ -13,7 +13,7 @@ export default async function handler(req, res) {
         .json({ error: true, message: 'mehtod tidak diijinkan' });
     }
 
-    const { nis, password } = req.body;
+    const { nis, password, isKeepLogin } = req.body;
     // validasi kosong atau tidak
 
     if (!nis) {
@@ -56,7 +56,9 @@ export default async function handler(req, res) {
     // lengkapi data yg kurang
     const token = generateRandomToken(10);
 
-    setCookie('token', token, { req, res, maxAge: 60 * 60 * 24 * 30 }); // 1 bulan
+    if (isKeepLogin) {
+      setCookie('token', token, { req, res, maxAge: 60 * 60 * 24 * 30 }); // 1 bulan
+    }
 
     // jika sudah sesuai simpan
     const users = await Users.findOneAndUpdate(
@@ -67,7 +69,7 @@ export default async function handler(req, res) {
     console.log('users after update: ', users);
 
     // kasih tahu client (hanya data yg diperbolehkan)
-    return res.status(200).json({ token });
+    return res.status(200).json({ token, isKeepLogin: !!isKeepLogin });
   } catch (error) {
     console.log('error:', error);
     res

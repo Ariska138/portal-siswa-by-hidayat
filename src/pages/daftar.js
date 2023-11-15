@@ -20,6 +20,7 @@ export default function Daftar() {
             Name<span className={styles.star}>*</span>
           </div>
           <input
+            value={name}
             onChange={(e) => {
               setName(e.target.value);
             }}
@@ -32,6 +33,7 @@ export default function Daftar() {
             NIS<span className={styles.star}>*</span>
           </div>
           <input
+            value={nis}
             className={styles.input}
             placeholder="12345"
             onChange={(e) => {
@@ -44,6 +46,7 @@ export default function Daftar() {
             Password<span className={styles.star}>*</span>
           </div>
           <input
+            value={password}
             className={styles.input}
             placeholder="******"
             type="password"
@@ -67,14 +70,15 @@ export default function Daftar() {
                 },
               });
 
+              const responseData = await res.json(); // Mendapatkan data JSON dari respons
+              console.log(responseData);
+              alert('Data sudah sukses didaftarkan');
+
               if (res.ok) {
                 // Periksa apakah respons memiliki status code 200 (OK)
-                const responseData = await res.json(); // Mendapatkan data JSON dari respons
-                console.log(responseData);
-                alert('Data sudah sukses didaftarkan');
                 router.push('/login');
               } else {
-                console.error('Gagal melakukan permintaan:', res.status);
+                console.error('Gagal melakukan permintaan:', res.data);
                 alert('Data gagal didaftarkan');
               }
             } catch (error) {

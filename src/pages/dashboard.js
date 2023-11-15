@@ -11,10 +11,17 @@ export default function Dasbor() {
   useEffect(() => {
     const run = async () => {
       try {
-        const myCookieValue = getCookie('token');
-        console.log('myCookieValue: ', myCookieValue);
-        if (myCookieValue) {
-          const data = { token: myCookieValue };
+        let myToken = '';
+        if (localStorage.getItem('keepLogin') === 'true') {
+          myToken = getCookie('token');
+        } else {
+          myToken = sessionStorage.getItem('token');
+        }
+
+        myToken = sessionStorage.getItem('token');
+
+        if (myToken) {
+          const data = { token: myToken };
           const res = await fetch('/api/checkToken', {
             method: 'POST', // Corrected the typo in 'method'
             body: JSON.stringify(data), // Assuming 'data' is an object that you want to send as JSON
@@ -30,11 +37,10 @@ export default function Dasbor() {
             setUser(responseData);
           } else {
             console.error('Gagal melakukan permintaan:', res.status);
-            alert('terjadi kesalahan koneksi');
             router.push('/login');
           }
         } else {
-          router.push('/login');
+          // router.push('/login');
         }
       } catch (error) {
         console.log('error: ', error);
@@ -64,10 +70,16 @@ export default function Dasbor() {
               <button
                 style={{ fontWeight: '18px' }}
                 onClick={async () => {
-                  const myCookieValue = getCookie('token');
-                  console.log('myCookieValue: ', myCookieValue);
-                  if (myCookieValue) {
-                    const data = { token: myCookieValue };
+                  let myToken = '';
+                  if (localStorage.getItem('keepLogin') === 'true') {
+                    myToken = getCookie('token');
+                  } else {
+                    sessionStorage.setItem('token', '');
+                    router.push('/login');
+                    return;
+                  }
+                  if (myToken) {
+                    const data = { token: myToken };
                     const res = await fetch('/api/logout', {
                       method: 'POST', // Corrected the typo in 'method'
                       body: JSON.stringify(data), // Assuming 'data' is an object that you want to send as JSON

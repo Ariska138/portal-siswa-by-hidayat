@@ -1,6 +1,6 @@
 import styles from '@/styles/Login.module.css';
 import { dmSans } from '@/styles/fonts';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 export default function Login() {
@@ -8,6 +8,8 @@ export default function Login() {
 
   const [nis, setNis] = useState('');
   const [password, setPassword] = useState('');
+  const [isKeepLogin, setKeepLogin] = useState(false);
+
   return (
     <div className={`${styles.container} ${dmSans.className}`}>
       <div className={styles.card}>
@@ -39,11 +41,23 @@ export default function Login() {
               setPassword(e.target.value);
             }}
           />
+          <div>
+            <input
+              type="checkbox"
+              onChange={(e) => {
+                console.log(e.target.checked);
+                let isChecked = e.target.checked;
+                localStorage.setItem('keepLogin', isChecked);
+                setKeepLogin(isChecked);
+              }}
+            ></input>
+            <span> Keep Me Logged In</span>
+          </div>
         </div>
         <button
           className={styles.buttonPrimary}
           onClick={async (e) => {
-            const data = { nis, password };
+            const data = { nis, password, isKeepLogin };
             console.log('click daftar by: ', data);
 
             try {
@@ -58,7 +72,13 @@ export default function Login() {
               if (res.ok) {
                 // Periksa apakah respons memiliki status code 200 (OK)
                 // Mendapatkan data JSON dari respons
-                console.log('responseData: ', responseData);
+                console.log('responseData: ', responseData); //ex: {token: 'Id2Qs257T0', isKeepLogin: true}
+                localStorage.setItem('keepLogin', responseData.isKeepLogin);
+
+                if (!responseData.isKeepLogin) {
+                  sessionStorage.setItem('token', responseData.token);
+                }
+
                 alert('sukses login');
                 router.push('/dashboard');
               } else {

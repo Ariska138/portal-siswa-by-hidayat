@@ -8,10 +8,16 @@ export default function Home() {
   useEffect(() => {
     const run = async () => {
       try {
-        const myCookieValue = getCookie('token');
-        console.log('myCookieValue: ', myCookieValue);
-        if (myCookieValue) {
-          const data = { token: myCookieValue };
+        let myToken = '';
+        if (localStorage.getItem('keepLogin') === 'true') {
+          myToken = getCookie('token');
+        } else {
+          myToken = sessionStorage.getItem('token');
+        }
+
+        console.log('myToken: ', myToken);
+        if (myToken) {
+          const data = { token: myToken };
           const res = await fetch('/api/checkToken', {
             method: 'POST', // Corrected the typo in 'method'
             body: JSON.stringify(data), // Assuming 'data' is an object that you want to send as JSON
