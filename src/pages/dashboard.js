@@ -18,8 +18,6 @@ export default function Dasbor() {
           myToken = sessionStorage.getItem('token');
         }
 
-        myToken = sessionStorage.getItem('token');
-
         if (myToken) {
           const data = { token: myToken };
           const res = await fetch('/api/checkToken', {
@@ -40,7 +38,7 @@ export default function Dasbor() {
             router.push('/login');
           }
         } else {
-          // router.push('/login');
+          router.push('/login');
         }
       } catch (error) {
         console.log('error: ', error);
