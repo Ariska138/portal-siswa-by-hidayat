@@ -1,3 +1,5 @@
+import { getCookie } from 'cookies-next';
+
 export const getDataApi = async (
   path = '/api/listUsers',
   successCallback,
@@ -16,7 +18,7 @@ export const getDataApi = async (
       method: 'GET', // Corrected the typo in 'method'
       headers: {
         'Content-Type': 'application/json', // Specifying the content type as JSON
-        Authorization: token,
+        Authorization: myToken,
       },
     });
 
