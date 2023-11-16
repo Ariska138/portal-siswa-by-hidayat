@@ -25,7 +25,6 @@ export default function Dasbor() {
 
           let myUser;
           await postDataApi(
-            myToken,
             '/api/checkToken',
             data,
             (successData) => {
@@ -49,7 +48,6 @@ export default function Dasbor() {
 
           if (myUser && myUser.role === 1) {
             await getDataApi(
-              myToken,
               '/api/listUsers',
               (dataSuccess) => {
                 console.log('dataSuccess: ', dataSuccess);
@@ -101,7 +99,6 @@ export default function Dasbor() {
                   if (myToken) {
                     const data = { token: myToken };
                     await postDataApi(
-                      myToken,
                       '/api/logout',
                       data,
                       (successData) => {
