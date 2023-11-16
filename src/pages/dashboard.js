@@ -23,6 +23,7 @@ export default function Dasbor() {
         if (myToken) {
           const data = { token: myToken };
 
+          let myUser;
           await postDataApi(
             myToken,
             '/api/checkToken',
@@ -37,7 +38,8 @@ export default function Dasbor() {
                   roleName = 'Admin';
                   break;
               }
-              setUser({ ...successData, roleName });
+              myUser = { ...successData, roleName };
+              setUser(myUser);
             },
             (failData) => {
               console.log('failData: ', failData);
@@ -45,19 +47,19 @@ export default function Dasbor() {
             }
           );
 
-          await getDataApi(
-            myToken,
-            '/api/listUsers',
-            (dataSuccess) => {
-              console.log('dataSuccess: ', dataSuccess);
-              setAllUsers(dataSuccess.users);
-            },
-            (dataFail) => {
-              console.log('dataFail: ', dataFail);
-            }
-          );
-        } else {
-          router.push('/login');
+          if (myUser && myUser.role === 1) {
+            await getDataApi(
+              myToken,
+              '/api/listUsers',
+              (dataSuccess) => {
+                console.log('dataSuccess: ', dataSuccess);
+                setAllUsers(dataSuccess.users);
+              },
+              (dataFail) => {
+                console.log('dataFail: ', dataFail);
+              }
+            );
+          }
         }
       } catch (error) {
         console.log('error: ', error);
@@ -141,36 +143,40 @@ export default function Dasbor() {
           </span>
         </div>
         <div style={{ padding: '32px' }}>
-          <div>Data User</div>
-          <div style={{ width: '100%' }}>
-            <table
-              style={{
-                width: '100%',
-                backgroundColor: '#fff',
-                border: '1px',
-              }}
-            >
-              <thead>
-                <tr>
-                  <th>NIS</th>
-                  <th>Name</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {allUsers &&
-                  allUsers.map((data, index) => {
-                    return (
-                      <tr key={index} style={{ padding: '8px' }}>
-                        <td>{data.nis}</td>
-                        <td>{data.name}</td>
-                        <td>{data.status}</td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
-          </div>
+          {user.role === 1 && (
+            <>
+              <div>Data User</div>
+              <div style={{ width: '100%' }}>
+                <table
+                  style={{
+                    width: '100%',
+                    backgroundColor: '#fff',
+                    border: '1px',
+                  }}
+                >
+                  <thead>
+                    <tr>
+                      <th>NIS</th>
+                      <th>Name</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allUsers &&
+                      allUsers.map((data, index) => {
+                        return (
+                          <tr key={index} style={{ padding: '8px' }}>
+                            <td>{data.nis}</td>
+                            <td>{data.name}</td>
+                            <td>{data.status}</td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

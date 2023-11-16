@@ -42,6 +42,7 @@ export const postDataApi = async (
   if (res.ok) {
     successCallback(responseData);
   } else {
+    console.error('Gagal melakukan permintaan:', res.status);
     failCallBack(responseData);
   }
 };
