@@ -3,10 +3,12 @@ import { dmSans } from '@/styles/fonts';
 import { getCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { getDataApi, postDataApi } from '@/utils/api';
 
 export default function Dasbor() {
   const [user, setUser] = useState({ id: '', name: '' });
   const router = useRouter();
+  const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {
     const run = async () => {
@@ -20,23 +22,40 @@ export default function Dasbor() {
 
         if (myToken) {
           const data = { token: myToken };
-          const res = await fetch('/api/checkToken', {
-            method: 'POST', // Corrected the typo in 'method'
-            body: JSON.stringify(data), // Assuming 'data' is an object that you want to send as JSON
-            headers: {
-              'Content-Type': 'application/json', // Specifying the content type as JSON
-            },
-          });
 
-          if (res.ok) {
-            // Periksa apakah respons memiliki status code 200 (OK)
-            const responseData = await res.json(); // Mendapatkan data JSON dari respons
-            console.log(responseData);
-            setUser(responseData);
-          } else {
-            console.error('Gagal melakukan permintaan:', res.status);
-            router.push('/login');
-          }
+          await postDataApi(
+            myToken,
+            '/api/checkToken',
+            data,
+            (successData) => {
+              let roleName = '';
+              switch (successData.role) {
+                case 0:
+                  roleName = 'Santri';
+                  break;
+                case 1:
+                  roleName = 'Admin';
+                  break;
+              }
+              setUser({ ...successData, roleName });
+            },
+            (failData) => {
+              console.log('failData: ', failData);
+              router.push('/login');
+            }
+          );
+
+          await getDataApi(
+            myToken,
+            '/api/listUsers',
+            (dataSuccess) => {
+              console.log('dataSuccess: ', dataSuccess);
+              setAllUsers(dataSuccess.users);
+            },
+            (dataFail) => {
+              console.log('dataFail: ', dataFail);
+            }
+          );
         } else {
           router.push('/login');
         }
@@ -58,6 +77,7 @@ export default function Dasbor() {
             paddingBottom: '56px',
             paddingLeft: '54px',
             paddingRight: '54px',
+            height: '70vh',
           }}
         >
           <h1>Dasboard</h1>
@@ -78,23 +98,18 @@ export default function Dasbor() {
                   }
                   if (myToken) {
                     const data = { token: myToken };
-                    const res = await fetch('/api/logout', {
-                      method: 'POST', // Corrected the typo in 'method'
-                      body: JSON.stringify(data), // Assuming 'data' is an object that you want to send as JSON
-                      headers: {
-                        'Content-Type': 'application/json', // Specifying the content type as JSON
+                    await postDataApi(
+                      myToken,
+                      '/api/logout',
+                      data,
+                      (successData) => {
+                        router.push('/login');
                       },
-                    });
-
-                    if (res.ok) {
-                      // Periksa apakah respons memiliki status code 200 (OK)
-                      const responseData = await res.json(); // Mendapatkan data JSON dari respons
-                      console.log(responseData);
-                      router.push('/login');
-                    } else {
-                      console.error('Gagal melakukan permintaan:', res.status);
-                      alert('terjadi kesalahan koneksi');
-                    }
+                      (failData) => {
+                        console.error('Gagal melakukan permintaan:', failData);
+                        alert('terjadi kesalahan koneksi ' + failData);
+                      }
+                    );
                   } else {
                     router.push('/login');
                   }
@@ -109,12 +124,54 @@ export default function Dasbor() {
       <div
         style={{
           display: 'flex',
-          justifyContent: 'end',
           width: '100%',
-          padding: '16px',
+          flexDirection: 'column',
         }}
       >
-        <span style={{ fontWeight: '700', fontSize: '28px' }}>{user.name}</span>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'end',
+            width: '100%',
+            padding: '16px',
+          }}
+        >
+          <span style={{ fontWeight: '700', fontSize: '28px' }}>
+            {user.name}({user.roleName})
+          </span>
+        </div>
+        <div style={{ padding: '32px' }}>
+          <div>Data User</div>
+          <div style={{ width: '100%' }}>
+            <table
+              style={{
+                width: '100%',
+                backgroundColor: '#fff',
+                border: '1px',
+              }}
+            >
+              <thead>
+                <tr>
+                  <th>NIS</th>
+                  <th>Name</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allUsers &&
+                  allUsers.map((data, index) => {
+                    return (
+                      <tr key={index} style={{ padding: '8px' }}>
+                        <td>{data.nis}</td>
+                        <td>{data.name}</td>
+                        <td>{data.status}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

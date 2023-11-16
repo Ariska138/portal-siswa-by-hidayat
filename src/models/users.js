@@ -21,6 +21,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  role: {
+    // 0: santri/anggota, 1: adalah admin
+    type: Number,
+    default: 0,
+  },
+  status: {
+    // 0: tidak aktif, sedangkan 1: aktif
+    type: Number,
+    default: 1,
+  },
 });
 
 let UserModel;
