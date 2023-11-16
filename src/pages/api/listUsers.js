@@ -43,11 +43,12 @@ export default async function handler(req, res) {
       });
     }
 
-    // await Users.updateMany({ role: { $exists: false } }, { $set: { role: 0 } }); // hanya dijalankan sekali
-    // await Users.updateMany(
-    //   { status: { $exists: false } },
-    //   { $set: { status: 1 } }
-    // ); // hanya dijalankan sekali
+    //@todo hanya dijalankan seklai
+    await Users.updateMany({ role: { $exists: false } }, { $set: { role: 0 } }); // hanya dijalankan sekali
+    await Users.updateMany(
+      { status: { $exists: false } },
+      { $set: { status: 1 } }
+    ); // hanya dijalankan sekali
 
     // tampilkan seluruh santri/siswa
     let users = await Users.find({ role: 0 });
