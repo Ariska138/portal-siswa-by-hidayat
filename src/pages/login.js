@@ -58,7 +58,7 @@ export default function Login() {
           className={styles.buttonPrimary}
           onClick={async (e) => {
             const data = { nis, password, isKeepLogin };
-            console.log('click daftar by: ', data);
+
 
             try {
               const res = await fetch('/api/login', {
