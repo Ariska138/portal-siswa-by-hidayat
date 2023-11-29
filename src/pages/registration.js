@@ -2,6 +2,7 @@ import styles from '@/styles/Login.module.css';
 import { dmSans } from '@/styles/fonts';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 export default function Daftar() {
   const router = useRouter();
@@ -72,14 +73,15 @@ export default function Daftar() {
 
               const responseData = await res.json(); // Mendapatkan data JSON dari respons
               console.log(responseData);
-              alert('Data sudah sukses didaftarkan');
 
               if (res.ok) {
                 // Periksa apakah respons memiliki status code 200 (OK)
+                alert('Data sudah sukses didaftarkan');
+
                 router.push('/login');
               } else {
                 console.error('Gagal melakukan permintaan:', res.data);
-                alert('Data gagal didaftarkan');
+                alert('Data gagal didaftarkan karena ', responseData.message);
               }
             } catch (error) {
               console.log('error: ', error);
@@ -89,6 +91,12 @@ export default function Daftar() {
         >
           Daftar
         </button>
+        <div>
+          Apakah Anda sudah memiliki akun?{' '}
+          <Link href="/login" target="_self" style={{ marginTop: '16px' }}>
+            Login sekarang
+          </Link>
+        </div>
       </div>
     </div>
   );

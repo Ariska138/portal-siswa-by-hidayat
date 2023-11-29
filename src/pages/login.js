@@ -2,6 +2,7 @@ import styles from '@/styles/Login.module.css';
 import { dmSans } from '@/styles/fonts';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 export default function Login() {
   const router = useRouter();
@@ -59,7 +60,6 @@ export default function Login() {
           onClick={async (e) => {
             const data = { nis, password, isKeepLogin };
 
-
             try {
               const res = await fetch('/api/login', {
                 method: 'POST', // Corrected the typo in 'method'
@@ -69,6 +69,7 @@ export default function Login() {
                 },
               });
               const responseData = await res.json();
+
               if (res.ok) {
                 // Periksa apakah respons memiliki status code 200 (OK)
                 // Mendapatkan data JSON dari respons
@@ -94,6 +95,16 @@ export default function Login() {
         >
           Sign In
         </button>
+        <div>
+          Apakah Anda sudah memiliki akun?{' '}
+          <Link
+            href="/registration"
+            target="_self"
+            style={{ marginTop: '16px' }}
+          >
+            Buat Akun Baru
+          </Link>
+        </div>
       </div>
     </div>
   );
